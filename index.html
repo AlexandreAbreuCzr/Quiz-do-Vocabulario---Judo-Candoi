@@ -1,34 +1,16 @@
-Ótimo! Eu adicionei todas as palavras que você me enviou ao código para o quiz de Judo. Agora você tem um banco de 108 palavras e significados.
-
-Aqui está o código atualizado:
-
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Judo</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        #quiz-container {
-            display: none;
-        }
-        .acerto {
-            color: green;
-        }
-        .erro {
-            color: red;
-        }
-    </style>
+    <title>Quiz do Vocabulario - Judo Candoi</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="menu-container">
-        <h1>Quiz de Judo</h1>
+        <h1>Quiz de Palavras - Judo</h1>
+        <h2>Escolha um grupo de palavras para decorar</h2>
         <button onclick="iniciarQuiz(1)">Grupo 1</button>
         <button onclick="iniciarQuiz(2)">Grupo 2</button>
         <button onclick="iniciarQuiz(3)">Grupo 3</button>
@@ -39,202 +21,19 @@ Aqui está o código atualizado:
         <button onclick="iniciarQuiz(8)">Grupo 8</button>
         <button onclick="iniciarQuiz(9)">Grupo 9</button>
         <button onclick="iniciarQuiz(10)">Grupo 10</button>
-        <button onclick="iniciarQuiz('todos')">Todos</button>
+        <button onclick="iniciarQuiz('todos')">Todos os Grupos</button>
     </div>
 
-    <div id="quiz-container">
-        <h2 id="palavra">Palavra</h2>
-        <input type="text" id="resposta" placeholder="Digite o significado">
-        <button onclick="verificarResposta()">Responder</button>
-        <p id="feedback"></p>
-        <p id="contador"></p>
+    <div id="quiz-container" style="display: none;">
+        <h2 id="grupo-titulo">Grupo 1</h2>
+        <p id="palavra-pergunta"></p>
+        <input type="text" id="resposta" placeholder="Digite a tradução" />
+        <button onclick="verificarResposta()">Verificar</button>
+        <div class="contador" id="contador">0 de 10</div>
+        <div class="feedback"></div>
+        <div class="resultado" id="resultado"></div>
     </div>
 
-    <script>
-        const palavras = [
-            { palavra: "AI-YOTSU", significado: "Pegada igual" },
-            { palavra: "ARIGATÔ-GOZAIMASSU", significado: "Obrigado" },
-            { palavra: "AGURA", significado: "Posição sentado como índio" },
-            { palavra: "ASHI", significado: "Pé, perna" },
-            { palavra: "AYUMI-ASHI", significado: "Passo normal" },
-            { palavra: "DAN", significado: "Grau, Graduação" },
-            { palavra: "DANGAI", significado: "Grupo antes da preta" },
-            { palavra: "DÔ", significado: "Caminho" },
-            { palavra: "DOJÔ", significado: "Academia, local de treinamento" },
-            { palavra: "DÔO-HAI", significado: "Colegas" },
-            { palavra: "ERI", significado: "Gola" },
-            { palavra: "GATAME", significado: "Ação de segurar" },
-            { palavra: "GÔMEM", significado: "Perdão, desculpa" },
-            { palavra: "HAJIMÊ", significado: "Iniciar, começar" },
-            { palavra: "HANSSÔKU-MAKE", significado: "Desclassificação" },
-            { palavra: "HARA", significado: "Estômago" },
-            { palavra: "HAY", significado: "Sim, pronto" },
-            { palavra: "HIDARI", significado: "Esquerda" },
-            { palavra: "HIDARI-JIGÔ-TAI", significado: "Posição de defesa esquerda" },
-            { palavra: "HIDARI-KUMI", significado: "Pegada de esquerda" },
-            { palavra: "HIDARI-SHIZENTAI", significado: "Posição natural esquerda" },
-            { palavra: "HIKI-WAKE", significado: "Empate" },
-            { palavra: "HIZA", significado: "Joelho" },
-            { palavra: "IPPON", significado: "Cem pontos" },
-            { palavra: "JIGÔ-HONTAI", significado: "Posição/defesa fundamental" },
-            { palavra: "JIGORO KANO", significado: "Nome do fundador do Judo" },
-            { palavra: "JIGÔ-TAI", significado: "Posição de defesa" },
-            { palavra: "JU", significado: "Suave" },
-            { palavra: "JUDÔ", significado: "Caminho da Suavidade / Flexibilidade" },
-            { palavra: "JUDOCA", significado: "Aquele que pratica o Judo" },
-            { palavra: "JUDOGUI", significado: "Roupa para a prática do Judo" },
-            { palavra: "KAESHI-WAZA", significado: "Técnicas de contragolpes" },
-            { palavra: "KAKÊ", significado: "Execução, finalização" },
-            { palavra: "KAMI", significado: "Acima" },
-            { palavra: "KATAME", significado: "Controle" },
-            { palavra: "KENKA-YOTSU", significado: "Pegada contrária" },
-            { palavra: "KESA", significado: "Ângulo" },
-            { palavra: "KIAI", significado: "União do espírito, grito de competição" },
-            { palavra: "KO", significado: "Pequeno" },
-            { palavra: "KODOKAN", significado: "Escola onde se estuda o caminho" },
-            { palavra: "KODOKAN", significado: "Escola do Caminho Fraternal" },
-            { palavra: "KÔ-HAI", significado: "Colega menos graduado" },
-            { palavra: "KON-BAN-WA", significado: "Boa Noite" },
-            { palavra: "KON-NITI-WA", significado: "Boa tarde" },
-            { palavra: "KOSHI", significado: "Quadril" },
-            { palavra: "KUMI-KATA", significado: "Maneira de segurar, pegada" },
-            { palavra: "KUZUSHI", significado: "Desequilíbrio" },
-            { palavra: "KYOTSUKE", significado: "Atenção" },
-            { palavra: "MATÊ", significado: "Parar" },
-            { palavra: "MIGUI", significado: "Direita" },
-            { palavra: "MIGUI-JIGÔ-TAI", significado: "Posição de defesa direita" },
-            { palavra: "MIGUI-KUMI", significado: "Pegada de direita" },
-            { palavra: "MIGUI-SHIZENTAI", significado: "Posição natural direita" },
-            { palavra: "MOKUSSÔ", significado: "Meditação" },
-            { palavra: "MORO-TE", significado: "Com as duas mãos" },
-            { palavra: "NAGUE-AI", significado: "Treinamento de projeção" },
-            { palavra: "Ô", significado: "Grande" },
-            { palavra: "OBI", significado: "Faixa" },
-            { palavra: "OHAYÔ-GOZAIMASSU", significado: "Bom dia" },
-            { palavra: "ONEGAI-SHIMASSU", significado: "Por favor" },
-            { palavra: "OSSAE-KOMI", significado: "Imobilização" },
-            { palavra: "OYASUMI-NASSAI", significado: "Boa noite (despedida)" },
-            { palavra: "RANDORI", significado: "Treinamento livre" },
-            { palavra: "REI", significado: "Cumprimento ou saudação" },
-            { palavra: "REI-HÔ", significado: "Formas de cumprimento/saudação" },
-            { palavra: "RENRAKU-HENKA-WAZA", significado: "Técnicas em sequência" },
-            { palavra: "RITSU-I", significado: "Posição em pé" },
-            { palavra: "RITSU-REI", significado: "Saudação em pé" },
-            { palavra: "SAYÔNARA", significado: "Até logo" },
-            { palavra: "SEI-ZÁ", significado: "Posição ajoelhado" },
-            { palavra: "SEMPAI", significado: "Colega mais graduado" },
-            { palavra: "SENSEI", significado: "Professor" },
-            { palavra: "SHIAI", significado: "Competição" },
-            { palavra: "SHIAI-GUEIKÔ", significado: "Treinamento de luta" },
-            { palavra: "SHIAI-JÔ", significado: "Área de competição" },
-            { palavra: "SHIDÔ", significado: "Penalidade = Cartão Amarelo" },
-            { palavra: "SHI-HAN", significado: "Mestre" },
-            { palavra: "SHINTAI", significado: "Formas de movimentação" },
-            { palavra: "SHISSEI", significado: "Postura" },
-            { palavra: "SHITABAKI OU ZUBON", significado: "Calça, parte inferior" },
-            { palavra: "SHIZEN-HONTAI", significado: "Posição natural" },
-            { palavra: "SHIZEN-TAI", significado: "Posição natural" },
-            { palavra: "SONO-MAMA", significado: "Parar do jeito que está" },
-            { palavra: "SOREMADÊ", significado: "Terminar, acabar" },
-            { palavra: "SURI-ASHI", significado: "Passo arrastado" },
-            { palavra: "TAIKAI", significado: "Campeonato" },
-            { palavra: "TAI-SABAKI", significado: "Movimento de esquiva" },
-            { palavra: "TATÂMI", significado: "Acolchoado próprio para o Judo" },
-            { palavra: "TATE", significado: "Levantar" },
-            { palavra: "TÊ", significado: "Mão, braço" },
-            { palavra: "TÊ-UKEMI", significado: "Treinamento de batida braço" },
-            { palavra: "TOKETÁ", significado: "Imobilização desfeita" },
-            { palavra: "TORIKESHI", significado: "Anulação da pontuação" },
-            { palavra: "TSUGUI-ASHI", significado: "Passo seguido" },
-            { palavra: "TSUKURI", significado: "Preparo do golpe" },
-            { palavra: "UKEMI", significado: "Amortecimento de queda ou queda" },
-            { palavra: "USHIRO", significado: "Atrás" },
-            { palavra: "USHIRÔ-UKEMI", significado: "Queda para trás" },
-            { palavra: "WAGUI", significado: "Casaco, parte superior do kimono" },
-            { palavra: "WAZA", significado: "Técnica" },
-            { palavra: "WAZA-ARI", significado: "Dez pontos" },
-            { palavra: "YAKUSSOKU-GUEIKÔ", significado: "Treinamento combinado" },
-            { palavra: "YOKO", significado: "Lado" },
-            { palavra: "YOKO-UKEMI", significado: "Queda para o lado" },
-            { palavra: "YOSHI", significado: "Continuar" },
-            { palavra: "ZAI", significado: "Posição sentado" },
-            { palavra: "ZA-REI", significado: "Saudação ajoelhado" }
-        ];
-
-        // Dividindo em 10 grupos de 10 palavras cada
-        const grupos = [];
-        let grupoAtual = [];
-        palavras.forEach((item, index) => {
-            grupoAtual.push(item);
-            if (grupoAtual.length === 10 || index === palavras.length - 1) {
-                grupos.push(grupoAtual);
-                grupoAtual = [];
-            }
-        });
-
-        // Variáveis para o quiz
-        let grupoSelecionado = 1;
-        let palavraIndex = 0;
-        let acertos = 0;
-        let erros = 0;
-
-        // Função para iniciar o quiz com um grupo específico
-        function iniciarQuiz(grupo) {
-            grupoSelecionado = grupo === 'todos' ? 1 : grupo;
-            palavraIndex = 0;
-            acertos = 0;
-            erros = 0;
-            mostrarPalavra();
-            document.getElementById('menu-container').style.display = 'none';
-            document.getElementById('quiz-container').style.display = 'block';
-        }
-
-        // Mostrar a palavra atual
-        function mostrarPalavra() {
-            const palavra = grupos[grupoSelecionado - 1][palavraIndex];
-            document.getElementById('palavra').textContent = palavra.palavra;
-            document.getElementById('feedback').textContent = '';
-            document.getElementById('resposta').value = '';
-            document.getElementById('contador').textContent = `Palavra ${palavraIndex + 1} de ${grupos[grupoSelecionado - 1].length}`;
-        }
-
-        // Função para verificar a resposta
-        function verificarResposta() {
-            const resposta = document.getElementById('resposta').value.trim().toLowerCase();
-            const palavra = grupos[grupoSelecionado - 1][palavraIndex];
-            const respostaCorreta = palavra.significado.toLowerCase();
-            
-            if (resposta.includes(respostaCorreta)) {
-                acertos++;
-                document.getElementById('feedback').textContent = 'Você acertou!';
-                document.getElementById('feedback').classList.add('acerto');
-                document.getElementById('feedback').classList.remove('erro');
-            } else {
-                erros++;
-                document.getElementById('feedback').textContent = 'Resposta errada!';
-                document.getElementById('feedback').classList.add('erro');
-                document.getElementById('feedback').classList.remove('acerto');
-            }
-
-            palavraIndex++;
-
-            if (palavraIndex < grupos[grupoSelecionado - 1].length) {
-                setTimeout(mostrarPalavra, 1000);
-            } else {
-                setTimeout(fimDeQuiz, 1000);
-            }
-        }
-
-        // Função chamada ao fim do quiz
-        function fimDeQuiz() {
-            alert(`Fim do quiz! Você acertou ${acertos} de ${acertos + erros} respostas.`);
-            document.getElementById('menu-container').style.display = 'block';
-            document.getElementById('quiz-container').style.display = 'none';
-        }
-    </script>
-
+    <script src="quiz.js"></script>
 </body>
 </html>
-```
-
-Agora, todos os 108 termos de Judo foram adicionados ao quiz, e você pode praticar com os diferentes grupos ou com todos ao mesmo tempo.
