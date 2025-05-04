@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz do Vocabulario - Judo Candoi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+            box-sizing: border-box;
+        }
+        #quiz-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            padding: 20px;
+            text-align: center;
+        }
+        #menu-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #16a085;
+        }
+        button {
+            background-color: #16a085;
+            color: white;
+            font-size: 16px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 200px;
+        }
+        button:hover {
+            background-color: #1abc9c;
+        }
+        input {
+            width: 80%;
+            padding: 8px;
+            font-size: 16px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+        .feedback {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .acerto {
+            color: green;
+        }
+        .erro {
+            color: red;
+        }
+        .contador {
+            font-size: 14px;
+            color: #888;
+        }
+        .resultado {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .resultado span {
+            color: #16a085;
+        }
+        @media (max-width: 600px) {
+            #quiz-container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="menu-container">
+        <h1>Quiz de Palavras - Judo</h1>
+        <h2>Escolha um grupo de palavras para decorar</h2>
+        <button onclick="iniciarQuiz(1)">Grupo 1</button>
+        <button onclick="iniciarQuiz(2)">Grupo 2</button>
+        <button onclick="iniciarQuiz(3)">Grupo 3</button>
+        <button onclick="iniciarQuiz(4)">Grupo 4</button>
+        <button onclick="iniciarQuiz(5)">Grupo 5</button>
+        <button onclick="iniciarQuiz(6)">Grupo 6</button>
+        <button onclick="iniciarQuiz(7)">Grupo 7</button>
+        <button onclick="iniciarQuiz(8)">Grupo 8</button>
+        <button onclick="iniciarQuiz(9)">Grupo 9</button>
+        <button onclick="iniciarQuiz(10)">Grupo 10</button>
+        <button onclick="iniciarQuiz('todos')">Todos os Grupos</button>
+    </div>
+
+    <div id="quiz-container" style="display:none;">
+        <h2 id="palavra"></h2>
+        <input type="text" id="resposta" placeholder="Digite o significado">
+        <button onclick="verificarResposta()">Verificar</button>
+        <p id="feedback" class="feedback"></p>
+        <p id="contador" class="contador"></p>
+    </div>
+
+    <div id="resultado-container" style="display:none;">
+        <p class="resultado">Você acertou <span id="acertos"></span> de <span id="total-palavras"></span> palavras.</p>
+        <p class="resultado">Porcentagem: <span id="porcentagem"></span>%</p>
+        <button onclick="recomeçarQuiz()">Recomeçar</button>
+        <button onclick="voltarMenu()">Voltar ao Menu</button>
+    </div>
+
+    <script>
+        const palavras = [
+            { palavra: "AI-YOTSU", significado: "Pegada igual" },
+            { palavra: "ARIGATÔ-GOZAIMASSU", significado: "Obrigado" },
+            { palavra: "AGURA", significado: "Posição sentado como índio" },
+            { palavra: "ASHI", significado: "Pé, perna" },
+            { palavra: "AYUMI-ASHI", significado: "Passo normal" },
+            { palavra: "DAN", significado: "Grau, Graduação" },
+            { palavra: "DANGAI", significado: "Grupo antes da preta" },
+            { palavra: "DÔ", significado: "Caminho" },
+            { palavra: "DOJÔ", significado: "Academia, local de treinamento" },
+            { palavra: "DÔO-HAI", significado: "Colegas" },
+            { palavra: "ERI", significado: "Gola" },
+            { palavra: "GATAME", significado: "Ação de segurar" },
+            { palavra: "GÔMEM", significado: "Perdão, desculpa" },
+            { palavra: "HAJIMÊ", significado: "Iniciar, começar" },
+            { palavra: "HANSSÔKU-MAKE", significado: "Desclassificação" },
+            { palavra: "HARA", significado: "Estômago" },
+            { palavra: "HAY", significado: "Sim, pronto" },
+            { palavra: "HIDARI", significado: "Esquerda" },
+            { palavra: "HIDARI-JIGÔ-TAI", significado: "Posição de defesa esquerda" },
+            { palavra: "HIDARI-KUMI", significado: "Pegada de esquerda" },
+            { palavra: "HIDARI-SHIZENTAI", significado: "Posição natural esquerda" },
+            { palavra: "HIKI-WAKE", significado: "Empate" },
+            { palavra: "HIZA", significado: "Joelho" },
+            { palavra: "IPPON", significado: "Cem pontos" },
+            { palavra: "JIGÔ-HONTAI", significado: "Posição/ defesa fundamental" },
+            { palavra: "JIGORO KANO", significado: "Nome do fundador do JUDÔ" },
+            { palavra: "JIGÔ-TAI", significado: "Posição de defesa" },
+            { palavra: "JU", significado: "Suave" },
+            { palavra: "JUDÔ", significado: "Caminho da Suavidade /Flexibilidade" },
+            { palavra: "JUDOCA", significado: "Aquele que pratica o JUDÔ" },
+            { palavra: "JUDOGUI", significado: "Roupa para a prática do JUDÔ" },
+            { palavra: "KAESHI-WAZA", significado: "Técnicas de contragolpes" },
+            { palavra: "KAKÊ", significado: "Execução, finalização" },
+            { palavra: "KAMI", significado: "Acima" },
+            { palavra: "KATAME", significado: "Controle" },
+            { palavra: "KENKA-YOTSU", significado: "Pegada contrária" },
+            { palavra: "KESA", significado: "Ângulo" },
+            { palavra: "KIAI", significado: "União do espírito, grito de competição" },
+            { palavra: "KO", significado: "Pequeno" },
+            { palavra: "KODOKAN", significado: "Escola onde se estuda o caminho" },
+            { palavra: "KODOKAN", significado: "Escola do Caminho Fraternal" },
+            { palavra: "KÔ-HAI", significado: "Colega menos graduado" },
+            { palavra: "KON-BAN-WA", significado: "Boa Noite" },
+            { palavra: "KON-NITI-WA", significado: "Boa tarde" },
+            { palavra: "KOSHI", significado: "Quadril" },
+            { palavra: "KUMI-KATA", significado: "Maneira de segurar, pegada" },
+            { palavra: "KUZUSHI", significado: "Desequilíbrio" },
+            { palavra: "KYOTSUKE", significado: "Atenção" },
+            { palavra: "MATÊ", significado: "Parar" },
+            { palavra: "MIGUI", significado: "Direita" },
+            { palavra: "MIGUI-JIGÔ-TAI", significado: "Posição de defesa direita" },
+            { palavra: "MIGUI-KUMI", significado: "Pegada de direita" },
+            { palavra: "MIGUI-SHIZENTAI", significado: "Posição natural direita" },
+            { palavra: "MOKUSSÔ", significado: "Meditação" },
+            { palavra: "MORO-TE", significado: "Com as duas mãos" },
+            { palavra: "NAGUE-AI", significado: "Treinamento de projeção" },
+            { palavra: "Ô", significado: "Grande" },
+            { palavra: "OBI", significado: "Faixa" },
+            { palavra: "OHAYÔ-GOZAIMASSU", significado: "Bom dia" },
+            { palavra: "ONEGAI-SHIMASSU", significado: "Por favor" },
+            { palavra: "OSSAE-KOMI", significado: "Imobilização" },
+            { palavra: "O-U", significado: "Cruzamento" },
+            { palavra: "O-YAKU", significado: "Posição de descanso" },
+            { palavra: "SHI-TAI", significado: "Posição fundamental" },
+            { palavra: "SHÔ", significado: "Pequeno" }
+        ];
+
+        let grupoSelecionado;
+        let respostasCorretas = 0;
+        let palavrasGrupo = [];
+        let palavraAtualIndex = 0;
+        
+        // Função para iniciar o quiz
+        function iniciarQuiz(grupo) {
+            grupoSelecionado = grupo;
+            palavrasGrupo = grupo === 'todos' ? palavras : palavras.slice(0, grupo * 5);
+            palavraAtualIndex = 0;
+            respostasCorretas = 0;
+            document.getElementById('menu-container').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('resultado-container').style.display = 'none';
+            mostrarPalavra();
+        }
+
+        // Função para exibir a palavra
+        function mostrarPalavra() {
+            if (palavraAtualIndex < palavrasGrupo.length) {
+                document.getElementById('palavra').textContent = palavrasGrupo[palavraAtualIndex].palavra;
+                document.getElementById('resposta').value = '';
+                document.getElementById('feedback').textContent = '';
+                document.getElementById('contador').textContent = `Questão ${palavraAtualIndex + 1} de ${palavrasGrupo.length}`;
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        // Função para verificar a resposta
+        function verificarResposta() {
+            const respostaUsuario = document.getElementById('resposta').value.trim().toLowerCase();
+            const palavraCorreta = palavrasGrupo[palavraAtualIndex].significado.toLowerCase();
+
+            if (respostaUsuario === palavraCorreta) {
+                respostasCorretas++;
+                document.getElementById('feedback').textContent = 'Resposta correta!';
+                document.getElementById('feedback').classList.add('acerto');
+                document.getElementById('feedback').classList.remove('erro');
+            } else {
+                document.getElementById('feedback').textContent = `Resposta incorreta! A resposta correta é: ${palavraCorreta}`;
+                document.getElementById('feedback').classList.add('erro');
+                document.getElementById('feedback').classList.remove('acerto');
+            }
+            palavraAtualIndex++;
+            setTimeout(mostrarPalavra, 1000); // Exibe a próxima palavra após 1 segundo
+        }
+
+        // Função para mostrar o resultado
+        function mostrarResultado() {
+            const porcentagem = (respostasCorretas / palavrasGrupo.length) * 100;
+            document.getElementById('acertos').textContent = respostasCorretas;
+            document.getElementById('total-palavras').textContent = palavrasGrupo.length;
+            document.getElementById('porcentagem').textContent = porcentagem.toFixed(2);
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('resultado-container').style.display = 'block';
+        }
+
+        // Função para reiniciar o quiz
+        function recomeçarQuiz() {
+            iniciarQuiz(grupoSelecionado);
+        }
+
+        // Função para voltar ao menu
+        function voltarMenu() {
+            document.getElementById('menu-container').style.display = 'block';
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('resultado-container').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
