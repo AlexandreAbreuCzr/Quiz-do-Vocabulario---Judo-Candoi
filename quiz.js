@@ -44,8 +44,7 @@ const palavrasPorGrupo = {
         { palavra: 'KESA', resposta: 'Ângulo' },
         { palavra: 'KIAI', resposta: 'União do espírito, grito de competição' },
         { palavra: 'KO', resposta: 'Pequeno' },
-        { palavra: 'KODOKAN', resposta: 'Escola onde se estuda o caminho' },
-        { palavra: 'KODOKAN', resposta: 'Escola do Caminho Fraternal' }
+        { palavra: 'KODOKAN', resposta: 'Escola onde se estuda o caminho' }
     ],
     5: [
         { palavra: 'KÔ-HAI', resposta: 'Colega menos graduado' },
@@ -165,7 +164,6 @@ const palavrasPorGrupo = {
         { palavra: 'KIAI', resposta: 'União do espírito, grito de competição' },
         { palavra: 'KO', resposta: 'Pequeno' },
         { palavra: 'KODOKAN', resposta: 'Escola onde se estuda o caminho' },
-        { palavra: 'KODOKAN', resposta: 'Escola do Caminho Fraternal' },
         { palavra: 'KÔ-HAI', resposta: 'Colega menos graduado' },
         { palavra: 'KON-BAN-WA', resposta: 'Boa Noite' },
         { palavra: 'KON-NITI-WA', resposta: 'Boa tarde' },
