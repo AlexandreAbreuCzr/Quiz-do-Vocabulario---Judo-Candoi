@@ -223,7 +223,12 @@ const palavrasPorGrupo = {
         { palavra: 'USHIRÔ-UKEMI', resposta: 'Queda para trás' },
         { palavra: 'WAGUI', resposta: 'Casaco, parte superior do kimono' },
         { palavra: 'WAZA', resposta: 'Técnica' },
-        { palavra: 'WAZA-ARI', resposta: 'Dez pontos' }
+        { palavra: 'WAZA-ARI', resposta: 'Dez pontos' },
+        { palavra: 'YOKO', resposta: 'Lado' },
+        { palavra: 'YOKO-UKEMI', resposta: 'Queda para o lado' },
+        { palavra: 'YOSHI', resposta: 'Continuar' },
+        { palavra: 'ZAI', resposta: 'Posição sentado' },
+        { palavra: 'ZA-REI', resposta: 'Saudação ajoelhado' }
     ]
 };
 
