@@ -237,6 +237,15 @@ let contador = 0;
 let acertos = 0;
 let palavrasGrupo = [];
 
+// Remove acentos e normaliza texto
+function normalizar(texto) {
+    return texto
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
 function iniciarQuiz(grupo) {
     grupoAtual = grupo;
     palavrasGrupo = palavrasPorGrupo[grupo] || [];
@@ -257,21 +266,32 @@ function mostrarPalavra() {
         return;
     }
     const palavraAtual = palavrasGrupo[contador];
-    document.getElementById('palavra-pergunta').innerText = `Oque é "${palavraAtual.palavra}"?`;
+    document.getElementById('grupo-titulo').innerText = `Grupo ${grupoAtual}`;
+    document.getElementById('palavra-pergunta').innerText = `O que é "${palavraAtual.palavra}"?`;
     document.getElementById('resposta').value = '';
     document.getElementById('contador').innerText = `${contador + 1} de ${palavrasGrupo.length}`;
+    document.querySelector('.feedback').innerHTML = '';
 }
 
 function verificarResposta() {
-    const resposta = document.getElementById('resposta').value.trim().toLowerCase();
+    const userRaw = document.getElementById('resposta').value;
+    const respostaUsuario = normalizar(userRaw);
     const palavraAtual = palavrasGrupo[contador];
-    const respostaCorreta = palavraAtual.resposta.toLowerCase();
+    
+    // Gera lista de respostas aceitas
+    const rawList = palavraAtual.resposta.split(',');
+    const aceitas = rawList.map(r => normalizar(r));
 
-    if (resposta === respostaCorreta) {
+    // Verificação exata ou similaridade
+    const match = stringSimilarity.findBestMatch(respostaUsuario, aceitas);
+    const melhor = match.bestMatch;
+    const threshold = 0.7;
+
+    if (aceitas.includes(respostaUsuario) || melhor.rating >= threshold) {
         acertos++;
-        document.querySelector('.feedback').innerHTML = `<p class="acerto">Correto!</p>`;
+        document.querySelector('.feedback').innerHTML = `<p class=\"acerto\">Correto!</p>`;
     } else {
-        document.querySelector('.feedback').innerHTML = `<p class="erro">Errado! A resposta correta é "${palavraAtual.resposta}".</p>`;
+        document.querySelector('.feedback').innerHTML = `<p class=\"erro\">Errado! A resposta correta é "${palavraAtual.resposta}".</p>`;
     }
 
     contador++;
